@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tendances du Recrutement — Excelia Alumni 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .slides-container { height: 100vh; overflow: hidden; position: relative; }
+        .slide {
+            height: 100vh; width: 100vw; display: none; flex-direction: column;
+            justify-content: center; align-items: center; padding: 50px 70px;
+            position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .slide.active { display: flex; opacity: 1; }
+        .slide-title { background: linear-gradient(135deg, #c2491d 0%, #1a1a2e 100%); color: white; }
+        .slide-white { background: #fff; color: #2c3e50; }
+        .slide-dark { background: #1a1a2e; color: white; }
+        .slide-light { background: linear-gradient(135deg, #fef5f0 0%, #f0f7f4 100%); color: #2c3e50; }
+        .slide-accent { background: linear-gradient(135deg, #c2491d 0%, #e8683a 100%); color: white; }
+        .slide-sage { background: linear-gradient(135deg, #2a5548 0%, #3a6b5e 100%); color: white; }
+        .slide-warm { background: linear-gradient(135deg, #fef0eb 0%, #ffe8d6 100%); color: #2c3e50; }
+        .slide-cool { background: linear-gradient(135deg, #e8f5f0 0%, #d4edda 100%); color: #2c3e50; }
+        .slide-value { background: linear-gradient(135deg, #1a1a2e 0%, #3a2a1e 100%); color: white; }
+        .slide-gold { background: linear-gradient(135deg, #f5f0e0 0%, #ede4c8 100%); color: #2c3e50; }
+        h1 { font-size: 3.5em; font-weight: 700; margin-bottom: 20px; text-align: center; line-height: 1.15; }
+        h2 { font-size: 2.4em; font-weight: 700; margin-bottom: 20px; text-align: center; }
+        .subtitle { font-size: 1.25em; opacity: 0.9; text-align: center; max-width: 900px; line-height: 1.5; }
+        .content-center { text-align: center; max-width: 1100px; }
+        .content-split { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; width: 100%; max-width: 1200px; align-items: start; }
+        .content-thirds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; max-width: 1200px; }
+        .content-quarters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; width: 100%; max-width: 1200px; }
+        .big-number { font-size: 5.5em; font-weight: 700; line-height: 1; }
+        .big-number.accent { color: #c2491d; }
+        .big-number.sage { color: #3a6b5e; }
+        .stat-card { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.08); text-align: center; }
+        .stat-card .number { font-size: 2.4em; font-weight: 700; background: linear-gradient(135deg, #c2491d, #3a6b5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .number.a { background: linear-gradient(135deg, #c2491d, #e8683a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .number.s { background: linear-gradient(135deg, #3a6b5e, #4d8b7a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .number.g { background: linear-gradient(135deg, #b8942e, #d4ad3a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .label { font-size: 0.85em; color: #666; margin-top: 4px; line-height: 1.3; }
+        .stat-card .trend { font-size: 0.72em; font-weight: 600; margin-top: 5px; display: inline-block; padding: 2px 10px; border-radius: 20px; }
+        .td { background: #fde8e8; color: #c53030; }
+        .tu { background: #e6f7ef; color: #1a7a4c; }
+        .tn { background: #f0eeeb; color: #888; }
+        .pillar-card { background: white; padding: 28px 22px; border-radius: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.12); text-align: center; position: relative; overflow: hidden; }
+        .pillar-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; }
+        .pillar-card.pa::before { background: linear-gradient(90deg, #c2491d, #e8683a); }
+        .pillar-card.ps::before { background: linear-gradient(90deg, #3a6b5e, #4d8b7a); }
+        .pillar-card.pg::before { background: linear-gradient(90deg, #b8942e, #d4ad3a); }
+        .pillar-card .icon { font-size: 2.2em; margin-bottom: 10px; }
+        .pillar-card .pillar-label { font-size: 0.72em; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+        .pillar-card.pa .pillar-label, .pillar-card.pa .pstat { color: #c2491d; }
+        .pillar-card.ps .pillar-label, .pillar-card.ps .pstat { color: #3a6b5e; }
+        .pillar-card.pg .pillar-label, .pillar-card.pg .pstat { color: #b8942e; }
+        .pillar-card .pstat { font-size: 2.4em; font-weight: 700; margin: 8px 0; }
+        .pillar-card h3 { font-size: 1.05em; margin-bottom: 6px; color: #2c3e50; }
+        .pillar-card p { color: #666; font-size: 0.85em; line-height: 1.45; }
+        .feature-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .feature-card h4 { font-size: 0.95em; color: #2c3e50; margin-bottom: 3px; }
+        .feature-card p { color: #666; font-size: 0.82em; line-height: 1.45; }
+        .exec-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.1); text-align: center; }
+        .exec-card .estat { font-size: 2.2em; font-weight: 700; color: #c2491d; margin-bottom: 4px; }
+        .exec-card h3 { font-size: 0.9em; color: #2c3e50; margin-bottom: 3px; }
+        .exec-card p { color: #666; font-size: 0.78em; }
+        .quote-box { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 22px 28px; border-radius: 16px; border-left: 5px solid #e8683a; max-width: 900px; margin-top: 18px; }
+        .quote-box p { font-size: 1.05em; font-style: italic; line-height: 1.55; }
+        .quote-box .attr { font-size: 0.85em; margin-top: 8px; opacity: 0.75; font-style: normal; font-weight: 600; }
+        .bar-row { display: grid; grid-template-columns: 170px 1fr 50px; gap: 10px; align-items: center; margin-bottom: 7px; }
+        .bar-row .lbl { font-size: 0.85em; font-weight: 500; text-align: right; }
+        .bar-track { height: 26px; background: rgba(0,0,0,0.06); border-radius: 6px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 6px; }
+        .bfa { background: linear-gradient(90deg, #c2491d, #e8683a); }
+        .bfs { background: linear-gradient(90deg, #3a6b5e, #4d8b7a); }
+        .bfg { background: linear-gradient(90deg, #b8942e, #d4ad3a); }
+        .bar-row .val { font-size: 0.75em; font-weight: 600; color: #888; }
+        .slide-dark .bar-track, .slide-value .bar-track { background: rgba(255,255,255,0.1); }
+        .slide-dark .bar-row .lbl, .slide-value .bar-row .lbl { color: rgba(255,255,255,0.8); }
+        .slide-dark .bar-row .val, .slide-value .bar-row .val { color: rgba(255,255,255,0.5); }
+        .tag { display: inline-block; padding: 5px 13px; border-radius: 20px; font-size: 0.76em; font-weight: 600; margin: 3px; }
+        .ta { background: #c2491d; color: #fff; }
+        .ts { background: #3a6b5e; color: #fff; }
+        .to { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.15); }
+        .cal-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; width: 100%; max-width: 1050px; }
+        .cal-m { text-align: center; padding: 12px 3px; border-radius: 10px; font-size: 0.7em; font-weight: 600; }
+        .cal-m .bar { display: block; width: 100%; height: 5px; border-radius: 3px; margin-top: 5px; }
+        .ch { background: #fef0eb; } .ch .bar { background: #c2491d; }
+        .cm { background: #f0f7f4; } .cm .bar { background: #3a6b5e; }
+        .cl { background: #f5f4f2; } .cl .bar { background: #d5d2cc; }
+        .plat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 1200px; }
+        .plat-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 6px 22px rgba(0,0,0,0.07); }
+        .plat-card .type { font-size: 0.62em; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #c2491d; margin-bottom: 3px; }
+        .plat-card h4 { font-size: 0.95em; font-weight: 700; color: #2c3e50; margin-bottom: 3px; }
+        .plat-card p { font-size: 0.76em; color: #666; line-height: 1.4; }
+        .ex-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px; }
+        .ex-card h4 { font-size: 0.95em; font-weight: 700; color: #e8683a; margin-bottom: 8px; }
+        .ex-card ul { list-style: none; }
+        .ex-card li { font-size: 0.8em; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.75); }
+        .ex-card li::before { content: '→ '; color: #e8683a; font-weight: 700; }
+        .reco-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; max-width: 1200px; }
+        .reco-card { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
+        .reco-card::before { content: attr(data-num); font-size: 3.2em; font-weight: 800; color: rgba(194,73,29,0.06); position: absolute; top: -5px; right: 10px; line-height: 1; }
+        .reco-card h4 { font-size: 0.9em; font-weight: 700; color: #c2491d; margin-bottom: 4px; }
+        .reco-card p { font-size: 0.78em; color: #555; line-height: 1.5; }
+        .nav-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 8px 16px; border-radius: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.3s ease; }
+        .nav-dot:hover { background: #bbb; transform: scale(1.2); }
+        .nav-dot.active { background: linear-gradient(135deg, #c2491d, #3a6b5e); transform: scale(1.3); }
+        .nav-arrows { position: fixed; bottom: 25px; right: 25px; display: flex; gap: 8px; z-index: 1000; }
+        .nav-arrow { width: 42px; height: 42px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 1.1em; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .nav-arrow:hover { background: #c2491d; color: white; }
+        .slide-counter { position: fixed; bottom: 25px; left: 25px; font-size: 0.8em; color: #999; z-index: 1000; background: rgba(255,255,255,0.95); padding: 7px 14px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .slide-counter span { color: #c2491d; font-weight: 600; }
+        .logo-badge { position: fixed; top: 18px; left: 25px; z-index: 1000; font-weight: 700; font-size: 0.85em; color: #2c3e50; letter-spacing: 0.02em; }
+        .logo-badge.light { color: white; }
+        @media (max-width: 1100px) {
+            h1 { font-size: 2.2em; } h2 { font-size: 1.7em; }
+            .slide { padding: 30px 35px; }
+            .content-thirds, .content-quarters, .plat-grid, .reco-grid { grid-template-columns: repeat(2, 1fr); }
+            .content-split { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            html, body { overflow: auto; }
+            .slides-container { height: auto; overflow: auto; }
+            .slide { height: auto; min-height: 100vh; width: 100%; position: relative; padding: 70px 18px 90px; display: none; flex-direction: column; justify-content: flex-start; opacity: 1; }
+            .slide.active { display: flex; }
+            h1 { font-size: 1.7em; } h2 { font-size: 1.4em; } .subtitle { font-size: 1em; } .big-number { font-size: 3.5em; }
+            .content-thirds, .content-quarters, .plat-grid, .reco-grid, .content-split { grid-template-columns: 1fr !important; }
+            .cal-grid { grid-template-columns: repeat(6, 1fr); }
+            .nav-container { bottom: 14px; padding: 6px 10px; gap: 5px; max-width: 90vw; overflow-x: auto; }
+            .nav-dot { width: 8px; height: 8px; }
+            .nav-arrows { bottom: 14px; right: 12px; }
+            .nav-arrow { width: 36px; height: 36px; }
+            .slide-counter { bottom: 14px; left: 12px; font-size: 0.72em; }
+            .bar-row { grid-template-columns: 110px 1fr 40px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+
+        <!-- ══════════ 1 · TITRE ══════════ -->
+        <div class="slide slide-title active" data-theme="light">
+            <div class="content-center">
+                <div style="margin-bottom: 18px; font-size: 0.8em; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75;">Conférence Alumni Jeunes Diplômés · Mars 2026</div>
+                <h1>Recruter et être recruté :<br>les nouvelles règles du jeu</h1>
+                <p class="subtitle" style="margin-top: 12px;">Volumes, compétences, plateformes, timing et stratégies — ce que tout jeune diplômé doit savoir pour 2026.</p>
+                <div style="display: flex; gap: 28px; justify-content: center; margin-top: 35px; font-size: 1.05em;">
+                    <span>📉 Marché en mutation</span>
+                    <span>🧠 Nouvelles compétences</span>
+                    <span>🎯 Stratégies gagnantes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 2 · LE CONTEXTE : un marché qui se retourne ══════════ -->
+        <div class="slide slide-light" data-theme="dark">
+            <h2>Le marché de l'emploi cadre se retourne</h2>
+            <p class="subtitle" style="margin-bottom: 20px;">Après une décennie de croissance, l'APEC constate une « sévère correction » en 2024.</p>
+            <div class="content-quarters">
+                <div class="stat-card"><div class="number a">-19%</div><div class="label">Embauches de jeunes diplômés en 2024</div></div>
+                <div class="stat-card"><div class="number s">41 000</div><div class="label">Embauches JD prévues en 2025</div><div class="trend td">↓ 16% supplémentaires</div></div>
+                <div class="stat-card"><div class="number g">55 600</div><div class="label">Postes IT à pourvoir — fonction N°1</div></div>
+                <div class="stat-card"><div class="number a">52%</div><div class="label">Des employeurs peinent à recruter malgré la baisse</div></div>
+            </div>
+            <div style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; width: 100%;">
+                <div style="background: white; padding: 16px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <p style="font-size: 0.88em; color: #444; line-height: 1.6;"><strong style="color:#c2491d;">750 000 étudiants</strong> arrivent sur le marché chaque année. 60% des offres Master sont concentrées en Île-de-France.</p>
+                </div>
+                <div style="background: white; padding: 16px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <p style="font-size: 0.88em; color: #444; line-height: 1.6;">Les jeunes diplômés sont <strong style="color:#3a6b5e;">les premiers touchés à la baisse</strong>, mais aussi les premiers à rebondir lors de la reprise.</p>
+                </div>
+            </div>
+            <p style="margin-top: 12px; color: #aaa; font-size: 0.75em;">Sources : APEC 2025 · France Travail BMO 2024 · CGE · DARES</p>
+        </div>
+
+        <!-- ══════════ 3 · L'ALTERNANCE RÉSISTE ══════════ -->
+        <div class="slide slide-sage" data-theme="light">
+            <h2 style="color: white;">L'alternance : la voie qui résiste</h2>
+            <p class="subtitle" style="color: rgba(255,255,255,0.75); margin-bottom: 20px;">Pendant que le marché cadre recule, l'alternance atteint un plateau historique.</p>
+            <div class="content-thirds">
+                <div class="pillar-card ps">
+                    <div class="icon">📈</div>
+                    <div class="pillar-label">Volume</div>
+                    <div class="pstat">1M+</div>
+                    <h3>Apprentis en France</h3>
+                    <p>852 000 nouveaux contrats en 2023 · Objectif 1M/an d'ici 2027</p>
+                </div>
+                <div class="pillar-card pa">
+                    <div class="icon">🎓</div>
+                    <div class="pillar-label">Supérieur</div>
+                    <div class="pstat">658K</div>
+                    <h3>Dans l'enseignement supérieur</h3>
+                    <p>62% des contrats sont post-bac · 61% des étudiants en licence pro</p>
+                </div>
+                <div class="pillar-card pg">
+                    <div class="icon">🚀</div>
+                    <div class="pillar-label">Insertion</div>
+                    <div class="pstat">7 / 10</div>
+                    <h3>En emploi sous 7 mois</h3>
+                    <p>90% de satisfaction entreprise · 60% embauchés dans leur entreprise d'alternance</p>
+                </div>
+            </div>
+            <p style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 0.82em;">Numérique & écologie = 18% des contrats (+8 pts) · Aide État maintenue à 6 000€</p>
+        </div>
+
+        <!-- ══════════ 4 · SOFT SKILLS ══════════ -->
+        <div class="slide slide-warm" data-theme="dark">
+            <div class="content-split" style="align-items: center;">
+                <div>
+                    <div class="big-number accent">2,9×</div>
+                    <h3 style="font-size: 1.5em; margin-top: 10px; color: #2c3e50;">Plus demandées que les hard skills</h3>
+                    <p style="font-size: 0.95em; color: #666; margin-top: 10px; line-height: 1.6;">En Europe, les compétences comportementales dominent largement les critères de recrutement. <strong>89% des échecs d'embauche</strong> sont liés à un décalage de savoir-être, pas de compétences techniques.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1em; margin-bottom: 12px; color: #c2491d;">Top soft skills recherchées</h3>
+                    <div class="bar-row"><span class="lbl">Communication</span><div class="bar-track"><div class="bar-fill bfa" style="width:95%"></div></div><span class="val">N°1</span></div>
+                    <div class="bar-row"><span class="lbl">Travail d'équipe</span><div class="bar-track"><div class="bar-fill bfa" style="width:90%"></div></div><span class="val">N°2</span></div>
+                    <div class="bar-row"><span class="lbl">Adaptabilité</span><div class="bar-track"><div class="bar-fill bfa" style="width:84%"></div></div><span class="val">69%</span></div>
+                    <div class="bar-row"><span class="lbl">Rigueur / Méthode</span><div class="bar-track"><div class="bar-fill bfa" style="width:80%"></div></div><span class="val">72%</span></div>
+                    <div class="bar-row"><span class="lbl">Pensée analytique</span><div class="bar-track"><div class="bar-fill bfa" style="width:75%"></div></div><span class="val">Top 5</span></div>
+                    <div class="bar-row"><span class="lbl">Créativité</span><div class="bar-track"><div class="bar-fill bfa" style="width:70%"></div></div><span class="val">Top 6</span></div>
+                    <p style="font-size: 0.72em; color: #aaa; margin-top: 8px; font-style: italic;">AssessFirst · WEF Future of Jobs 2025 · Baromètre Lefebvre Dalloz</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 5 · HARD SKILLS + PROFIL IDÉAL ══════════ -->
+        <div class="slide slide-dark" data-theme="light">
+            <h2 style="color: white;">Hard skills + le profil idéal en 2025</h2>
+            <p class="subtitle" style="color: rgba(255,255,255,0.65); margin-bottom: 20px;">Les offres liées à l'IA générative ont explosé de +411% au niveau mondial.</p>
+            <div class="content-split" style="max-width: 1100px;">
+                <div>
+                    <div class="bar-row"><span class="lbl">IA & automatisation</span><div class="bar-track"><div class="bar-fill bfs" style="width:95%"></div></div><span class="val">+411%</span></div>
+                    <div class="bar-row"><span class="lbl">Data analysis</span><div class="bar-track"><div class="bar-fill bfs" style="width:88%"></div></div><span class="val">N°2</span></div>
+                    <div class="bar-row"><span class="lbl">Cloud computing</span><div class="bar-track"><div class="bar-fill bfs" style="width:80%"></div></div><span class="val">N°3</span></div>
+                    <div class="bar-row"><span class="lbl">Cybersécurité</span><div class="bar-track"><div class="bar-fill bfs" style="width:76%"></div></div><span class="val">4M postes</span></div>
+                    <div class="bar-row"><span class="lbl">Gestion de projet Agile</span><div class="bar-track"><div class="bar-fill bfs" style="width:68%"></div></div><span class="val">Top 5</span></div>
+                    <div class="bar-row"><span class="lbl">Power BI / Python</span><div class="bar-track"><div class="bar-fill bfs" style="width:60%"></div></div><span class="val">Top 6</span></div>
+                </div>
+                <div>
+                    <h3 style="font-size: 1em; color: #e8683a; margin-bottom: 12px;">Le candidat que tout le monde cherche</h3>
+                    <div style="margin-bottom: 14px;">
+                        <span class="tag ta">Communication</span>
+                        <span class="tag ta">Adaptabilité</span>
+                        <span class="tag ts">IA / GenAI</span>
+                        <span class="tag ts">Data</span>
+                        <span class="tag to">Rigueur</span>
+                        <span class="tag to">Autonomie</span>
+                        <span class="tag ts">Cloud</span>
+                        <span class="tag to">Curiosité</span>
+                        <span class="tag ts">Agile</span>
+                        <span class="tag to">Empathie</span>
+                        <span class="tag ts">RSE</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.06); padding: 16px; border-radius: 12px; border-left: 3px solid #e8683a;">
+                        <p style="font-size: 0.85em; color: rgba(255,255,255,0.7); line-height: 1.55;">Les recruteurs utilisent désormais tests techniques + entretiens comportementaux STAR + mises en situation. Le diplôme ouvre la porte, <strong style="color: #fff;">les soft skills la laissent ouverte</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 6 · INSERTION CGE ══════════ -->
+        <div class="slide slide-white" data-theme="dark">
+            <h2>Où vont les diplômés de grandes écoles ?</h2>
+            <p class="subtitle" style="margin-bottom: 18px;">Enquête CGE 2024 — promotion 2023</p>
+            <div class="content-quarters" style="margin-bottom: 18px;">
+                <div class="stat-card"><div class="number a">85,8%</div><div class="label">Taux d'insertion nette</div></div>
+                <div class="stat-card"><div class="number s">39 010€</div><div class="label">Salaire brut moyen</div><div class="trend tu">+2,2%</div></div>
+                <div class="stat-card"><div class="number g">67%</div><div class="label">Embauchés avant le diplôme</div></div>
+                <div class="stat-card"><div class="number">37,4%</div><div class="label">Accèdent à l'emploi via le stage</div></div>
+            </div>
+            <div class="content-split" style="max-width: 1000px;">
+                <div>
+                    <h3 style="font-size: 0.95em; font-weight: 700; color: #c2491d; margin-bottom: 8px;">Managers (écoles de commerce)</h3>
+                    <div class="bar-row"><span class="lbl">Conseil</span><div class="bar-track"><div class="bar-fill bfa" style="width:82%"></div></div><span class="val">20,6%</span></div>
+                    <div class="bar-row"><span class="lbl">Banque & Assurance</span><div class="bar-track"><div class="bar-fill bfa" style="width:58%"></div></div><span class="val">14,4%</span></div>
+                    <div class="bar-row"><span class="lbl">TIC & Services</span><div class="bar-track"><div class="bar-fill bfa" style="width:47%"></div></div><span class="val">11,8%</span></div>
+                </div>
+                <div>
+                    <h3 style="font-size: 0.95em; font-weight: 700; color: #3a6b5e; margin-bottom: 8px;">Ingénieurs</h3>
+                    <div class="bar-row"><span class="lbl">Conseil / Ingénierie</span><div class="bar-track"><div class="bar-fill bfs" style="width:100%"></div></div><span class="val">25%</span></div>
+                    <div class="bar-row"><span class="lbl">TIC & Services</span><div class="bar-track"><div class="bar-fill bfs" style="width:77%"></div></div><span class="val">19,3%</span></div>
+                    <div class="bar-row"><span class="lbl">Industrie transports</span><div class="bar-track"><div class="bar-fill bfs" style="width:34%"></div></div><span class="val">8,5%</span></div>
+                </div>
+            </div>
+            <p style="margin-top: 10px; color: #aaa; font-size: 0.78em;">Répartition équilibrée : ⅓ PME · ⅓ ETI · ⅓ GE · RSE présente dans 41,7% des postes (+3 pts)</p>
+        </div>
+
+        <!-- ══════════ 7 · PLATEFORMES ══════════ -->
+        <div class="slide slide-light" data-theme="dark">
+            <h2>Où postuler en 2026</h2>
+            <p class="subtitle" style="margin-bottom: 18px;">Les réseaux sociaux sont le 2ᵉ canal de recrutement. La présélection téléphonique a bondi de +13 pts en 5 ans.</p>
+            <div class="plat-grid">
+                <div class="plat-card"><div class="type">Incontournable</div><h4>LinkedIn</h4><p>90% des dirigeants l'utilisent. Canal N°1 des chasseurs de têtes et du personal branding.</p></div>
+                <div class="plat-card"><div class="type">Avis & salaires</div><h4>Glassdoor</h4><p>Avis salariés, grilles de salaires, questions d'entretien. Indispensable pour préparer ses candidatures.</p></div>
+                <div class="plat-card"><div class="type">Culture & transparence</div><h4>Welcome to the Jungle</h4><p>Vidéos, interviews d'équipes. Startups → grands groupes. 3M visiteurs/mois.</p></div>
+                <div class="plat-card"><div class="type">Agrégateur mondial</div><h4>Indeed</h4><p>Moteur de recherche massif. 50+ pays. Idéal pour ratisser large avec alertes.</p></div>
+                <div class="plat-card"><div class="type">1er acteur privé FR</div><h4>HelloWork</h4><p>500K+ offres/mois. Outils CV intégrés. Généraliste très utilisé en France.</p></div>
+                <div class="plat-card"><div class="type">Service public</div><h4>France Travail</h4><p>1jeune1solution · Aide alternance 6 000€ · Accompagnement personnalisé 15–30 ans.</p></div>
+                <div class="plat-card"><div class="type">Emploi cadre</div><h4>APEC</h4><p>Référence pour les cadres. Études marché, coaching, offres exclusives.</p></div>
+                <div class="plat-card"><div class="type">Votre réseau</div><h4>Excelia Alumni</h4><p>47 000 diplômés dans 150 pays. Offres exclusives, événements, mentoring.</p></div>
+            </div>
+        </div>
+
+        <!-- ══════════ 8 · SAISONNALITÉ ══════════ -->
+        <div class="slide slide-white" data-theme="dark">
+            <h2>Quand postuler ?</h2>
+            <p class="subtitle" style="margin-bottom: 14px;">Deux pics par an. L'été est sous-estimé : moins de concurrence, recruteurs plus disponibles.</p>
+            <div class="cal-grid">
+                <div class="cal-m ch">JAN<br><strong>⬆</strong><span class="bar"></span></div>
+                <div class="cal-m ch">FÉV<br><strong>⬆</strong><span class="bar"></span></div>
+                <div class="cal-m ch">MAR<br><strong>⬆</strong><span class="bar"></span></div>
+                <div class="cal-m cm">AVR<br>●<span class="bar"></span></div>
+                <div class="cal-m cm">MAI<br>●<span class="bar"></span></div>
+                <div class="cal-m cm">JUN<br>●<span class="bar"></span></div>
+                <div class="cal-m cl">JUL<br>○<span class="bar"></span></div>
+                <div class="cal-m cl">AOÛ<br>○<span class="bar"></span></div>
+                <div class="cal-m ch">SEP<br><strong>⬆</strong><span class="bar"></span></div>
+                <div class="cal-m ch">OCT<br><strong>⬆</strong><span class="bar"></span></div>
+                <div class="cal-m cm">NOV<br>●<span class="bar"></span></div>
+                <div class="cal-m cl">DÉC<br>○<span class="bar"></span></div>
+            </div>
+            <div style="display: flex; gap: 20px; margin: 10px 0 18px; font-size: 0.75em; color: #888;">
+                <span>🔴 Pic</span><span>🟢 Soutenu</span><span>⚪ Calme</span>
+            </div>
+            <div class="content-split" style="max-width: 1000px;">
+                <div style="background: #fef0eb; padding: 18px; border-radius: 12px;">
+                    <h3 style="font-size: 0.95em; color: #c2491d; margin-bottom: 6px;">CDI & premiers emplois</h3>
+                    <p style="font-size: 0.83em; color: #555; line-height: 1.65;"><strong>Jan–Mar :</strong> budgets débloqués, départs post-primes<br><strong>Avr–Juin :</strong> Graduate Programs, forums école<br><strong>Sep–Oct :</strong> 2ᵉ vague, réévaluation des objectifs</p>
+                </div>
+                <div style="background: #f0f7f4; padding: 18px; border-radius: 12px;">
+                    <h3 style="font-size: 0.95em; color: #3a6b5e; margin-bottom: 6px;">Alternance & stages</h3>
+                    <p style="font-size: 0.83em; color: #555; line-height: 1.65;"><strong>Oct–Déc :</strong> offres d'alternance pour la rentrée suivante<br><strong>Jan–Mar :</strong> pic stages de fin d'études<br><strong>Avr–Sep :</strong> dernières signatures pour septembre</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 9 · FOCUS EXCELIA ══════════ -->
+        <div class="slide slide-value" data-theme="light">
+            <h2 style="color: white;">Excelia : votre avantage compétitif</h2>
+            <p class="subtitle" style="color: rgba(255,255,255,0.65); margin-bottom: 18px;">Triple accréditation AACSB · AMBA · EQUIS — moins de 1% des écoles dans le monde</p>
+            <div class="content-quarters" style="margin-bottom: 18px;">
+                <div class="exec-card"><div class="estat">47 000</div><h3>Alumni dans 150 pays</h3></div>
+                <div class="exec-card"><div class="estat">42K€</div><h3>Salaire brut PGE 2024</h3></div>
+                <div class="exec-card"><div class="estat">190+</div><h3>Universités partenaires</h3></div>
+                <div class="exec-card"><div class="estat" style="color: #3a6b5e;">~50K€</div><h3>Salaire à 3 ans (FT)</h3></div>
+            </div>
+            <div class="content-thirds" style="max-width: 1100px;">
+                <div class="ex-card">
+                    <h4>Secteurs clés</h4>
+                    <ul>
+                        <li>Conseil & stratégie</li>
+                        <li>Banque, finance, assurance</li>
+                        <li>Marketing digital</li>
+                        <li>Audit & contrôle de gestion</li>
+                        <li>Data & Business Intelligence</li>
+                        <li>Tourisme & RSE</li>
+                    </ul>
+                </div>
+                <div class="ex-card">
+                    <h4>Postes occupés</h4>
+                    <ul>
+                        <li>Consultant / Business Developer</li>
+                        <li>Chef de produit / Brand Manager</li>
+                        <li>Analyste financier</li>
+                        <li>Chef de projet digital</li>
+                        <li>Responsable marketing</li>
+                        <li>Entrepreneur / Fondateur</li>
+                    </ul>
+                </div>
+                <div class="ex-card">
+                    <h4>Entreprises qui recrutent</h4>
+                    <ul>
+                        <li>Big 4 (EY, Deloitte, PwC, KPMG)</li>
+                        <li>BNP, SG, Crédit Agricole</li>
+                        <li>L'Oréal, LVMH, Airbus</li>
+                        <li>Capgemini, Sopra Steria</li>
+                        <li>AXA, Accor, Club Med</li>
+                        <li>Startups French Tech</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 10 · ADN EXCELIA ══════════ -->
+        <div class="slide slide-gold" data-theme="dark">
+            <h2>Ce qui fait la différence Excelia</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 1050px; width: 100%; margin-top: 8px;">
+                <div style="background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.07); overflow: hidden;"><div style="height: 5px; background: linear-gradient(90deg, #c2491d, #e8683a);"></div><div style="padding: 20px; text-align: center;"><div style="font-size: 1.8em; margin-bottom: 6px;">🌍</div><h3 style="font-size: 1em; color: #2c3e50; margin-bottom: 6px;">Humacité© & Climacité©</h3><p style="font-size: 0.83em; color: #666; line-height: 1.5;">Missions solidaires et environnementales uniques en France. Un signal fort pour les recruteurs sensibles à la RSE — présente dans 41,7% des postes.</p></div></div>
+                <div style="background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.07); overflow: hidden;"><div style="height: 5px; background: linear-gradient(90deg, #3a6b5e, #4d8b7a);"></div><div style="padding: 20px; text-align: center;"><div style="font-size: 1.8em; margin-bottom: 6px;">✈️</div><h3 style="font-size: 1em; color: #2c3e50; margin-bottom: 6px;">Double ancrage local + international</h3><p style="font-size: 0.83em; color: #666; line-height: 1.5;">Forte insertion en Nouvelle-Aquitaine et Centre-Val de Loire, avec 190+ partenariats internationaux et 150 pays de présence alumni.</p></div></div>
+                <div style="background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.07); overflow: hidden;"><div style="height: 5px; background: linear-gradient(90deg, #b8942e, #d4ad3a);"></div><div style="padding: 20px; text-align: center;"><div style="font-size: 1.8em; margin-bottom: 6px;">🎯</div><h3 style="font-size: 1em; color: #2c3e50; margin-bottom: 6px;">Learning by doing</h3><p style="font-size: 0.83em; color: #666; line-height: 1.5;">Stages, associations, expatriation : la pédagogie expérientielle développe exactement les soft skills que les recruteurs placent en tête.</p></div></div>
+                <div style="background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.07); overflow: hidden;"><div style="height: 5px; background: linear-gradient(90deg, #1a1a2e, #3a3a5e);"></div><div style="padding: 20px; text-align: center;"><div style="font-size: 1.8em; margin-bottom: 6px;">💡</div><h3 style="font-size: 1em; color: #2c3e50; margin-bottom: 6px;">Ce que veut la Gen Z</h3><p style="font-size: 0.83em; color: #666; line-height: 1.5;">N°1 : le secteur d'activité. 58% voient le travail comme épanouissement (+7 pts). 36% abandonnent sans affinité avec le recruteur.</p></div></div>
+            </div>
+        </div>
+
+        <!-- ══════════ 11 · STRATÉGIES ══════════ -->
+        <div class="slide slide-white" data-theme="dark">
+            <h2>Vos 9 leviers d'action</h2>
+            <div class="reco-grid">
+                <div class="reco-card" data-num="01"><h4>Commencer 6 mois avant</h4><p>Caler sa recherche sur les pics jan–mars et sep–oct. Ne pas attendre le diplôme.</p></div>
+                <div class="reco-card" data-num="02"><h4>Soigner son LinkedIn</h4><p>Profil complet, titre précis, contenu régulier. C'est votre CV visible 24/7.</p></div>
+                <div class="reco-card" data-num="03"><h4>Combiner les canaux</h4><p>LinkedIn + WTTJ + Indeed + APEC + candidatures spontanées + réseau alumni. Ne jamais dépendre d'un seul.</p></div>
+                <div class="reco-card" data-num="04"><h4>Se former à l'IA & la data</h4><p>Même pour les profils non-tech. Certifications courtes, side projects, curiosité visible.</p></div>
+                <div class="reco-card" data-num="05"><h4>Préparer ses preuves STAR</h4><p>Un exemple concret par soft skill clé. Le diplôme ouvre la porte — le comportement la laisse ouverte.</p></div>
+                <div class="reco-card" data-num="06"><h4>Activer le réseau Excelia</h4><p>Contacter les alumni en poste dans vos cibles. Participer aux événements. Demander du mentoring.</p></div>
+                <div class="reco-card" data-num="07"><h4>Valoriser Humacité© / RSE</h4><p>Un différenciateur unique. 4 postes sur 10 intègrent une dimension RSE.</p></div>
+                <div class="reco-card" data-num="08"><h4>Considérer l'alternance post-diplôme</h4><p>80% d'insertion sous 6 mois. Un tremplin sûr quand le marché CDI se durcit.</p></div>
+                <div class="reco-card" data-num="09"><h4>Personnaliser chaque candidature</h4><p>Un pitch de 30 secondes. Un échange téléphonique soigné. Zéro copier-coller.</p></div>
+            </div>
+        </div>
+
+        <!-- ══════════ 12 · PRÉPARER SA RECHERCHE & SES ENTRETIENS AVEC L'IA ══════════ -->
+        <div class="slide slide-dark" data-theme="light">
+            <h2 style="color: white;">Préparer sa recherche et ses entretiens — avec l'IA</h2>
+            <p class="subtitle" style="color: rgba(255,255,255,0.6); margin-bottom: 18px;">L'IA ne remplace pas votre candidature — elle l'accélère et l'affine à chaque étape.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1150px; width: 100%;">
+
+                <!-- Colonne gauche : Recherche -->
+                <div>
+                    <h3 style="font-size: 1.05em; color: #e8683a; margin-bottom: 14px;">🔍 Optimiser sa recherche</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #e8683a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">CV & lettre sur mesure</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">Utiliser ChatGPT ou Claude pour adapter chaque CV aux mots-clés de l'offre. Générer une lettre ciblée en 2 minutes, puis la personnaliser.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #e8683a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">Veille sectorielle automatisée</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">Demander à l'IA un résumé des tendances d'un secteur, d'une entreprise ou d'un poste. Arriver en entretien avec une compréhension terrain.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #e8683a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">Profil LinkedIn optimisé</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">Réécrire son titre, son résumé et ses expériences avec l'IA pour maximiser la visibilité auprès des recruteurs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne droite : Entretiens -->
+                <div>
+                    <h3 style="font-size: 1.05em; color: #4d8b7a; margin-bottom: 14px;">🎤 Préparer ses entretiens</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #4d8b7a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">Simuler un entretien avec l'IA</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">Prompter « Joue le rôle d'un recruteur pour [poste] chez [entreprise] et pose-moi des questions ». S'entraîner à voix haute, pas juste à l'écrit.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #4d8b7a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">Structurer ses réponses STAR</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">Donner une expérience brute à l'IA et lui demander de la reformuler en Situation → Tâche → Action → Résultat. Puis la rendre naturelle.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 12px; border-left: 3px solid #4d8b7a;">
+                            <h4 style="font-size: 0.88em; color: #fff; margin-bottom: 3px;">Anticiper les questions pièges</h4>
+                            <p style="font-size: 0.78em; color: rgba(255,255,255,0.6); line-height: 1.45;">« Quelles questions difficiles un recruteur [secteur] pourrait-il poser ? » Préparer 3 réponses solides sur ses faiblesses, ses échecs, sa motivation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 18px; background: rgba(232,104,58,0.12); padding: 14px 22px; border-radius: 12px; max-width: 1150px; width: 100%; text-align: center;">
+                <p style="font-size: 0.88em; color: rgba(255,255,255,0.85); line-height: 1.5;">
+                    <strong style="color: #e8683a;">⚠️ Règle d'or :</strong> l'IA génère un premier jet — jamais le produit fini. Tout doit passer par votre voix, votre vécu, votre authenticité. Un recruteur détecte le copier-coller IA en 30 secondes.
+                </p>
+            </div>
+        </div>
+
+        <!-- ══════════ 13 · MESSAGE CLÉ ══════════ -->
+        <div class="slide slide-accent" data-theme="light">
+            <div class="content-center">
+                <h1 style="font-size: 2.8em;">Le marché se durcit.<br>Pas vos chances.</h1>
+                <p class="subtitle" style="color: rgba(255,255,255,0.85); margin-bottom: 25px;">Si vous combinez compétences techniques, soft skills et réseau — vous faites partie des profils que 52% des employeurs peinent à trouver.</p>
+                <div class="content-thirds" style="margin-bottom: 22px; max-width: 850px;">
+                    <div class="exec-card"><div class="estat" style="color: #c2491d;">85,8%</div><h3>Insertion grandes écoles</h3></div>
+                    <div class="exec-card"><div class="estat" style="color: #3a6b5e;">7 / 10</div><h3>Alternants en emploi sous 7 mois</h3></div>
+                    <div class="exec-card"><div class="estat" style="color: #b8942e;">47 000</div><h3>Alumni Excelia pour vous aider</h3></div>
+                </div>
+                <div class="quote-box" style="border-left-color: rgba(255,255,255,0.5);">
+                    <p style="color: white;">Triple accréditation, engagement RSE pionnier, pédagogie expérientielle : vous avez des cartes que d'autres n'ont pas. Jouez-les.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ 14 · FIN ══════════ -->
+        <div class="slide slide-title" data-theme="light">
+            <div class="content-center">
+                <div style="margin-bottom: 18px; font-size: 0.8em; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75;">Excelia Alumni · Mars 2026</div>
+                <h1>Questions<br>& échanges</h1>
+                <p class="subtitle" style="margin-top: 12px; opacity: 0.7;">Tendances du recrutement des jeunes talents en France</p>
+                <div style="margin-top: 40px; font-size: 0.78em; opacity: 0.45;">Sources : APEC · France Travail · CGE · DARES · LinkedIn · WEF · Pluralsight · AssessFirst · Financial Times · Excelia Group</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="logo-badge" id="logo-badge">Excelia Alumni</div>
+    <div class="slide-counter"><span id="current">1</span> / <span id="total">14</span></div>
+    <div class="nav-container" id="nav-dots"></div>
+    <div class="nav-arrows">
+        <button class="nav-arrow" onclick="changeSlide(-1)">←</button>
+        <button class="nav-arrow" onclick="changeSlide(1)">→</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        document.getElementById('total').textContent = totalSlides;
+        const navDots = document.getElementById('nav-dots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            navDots.appendChild(dot);
+        }
+        function updateSlide() {
+            slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+            document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+            document.getElementById('current').textContent = currentSlide + 1;
+            const theme = slides[currentSlide].dataset.theme;
+            document.getElementById('logo-badge').className = 'logo-badge ' + (theme === 'light' ? 'light' : '');
+        }
+        function changeSlide(dir) { currentSlide = (currentSlide + dir + totalSlides) % totalSlides; updateSlide(); }
+        function goToSlide(index) { currentSlide = index; updateSlide(); }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); changeSlide(1); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+            if (e.key === 'Home') goToSlide(0);
+            if (e.key === 'End') goToSlide(totalSlides - 1);
+        });
+        document.querySelector('.slides-container').addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-container, .nav-arrows, a')) changeSlide(1);
+        });
+        let touchStartX = 0, touchStartY = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].screenX - touchStartX;
+            const dy = e.changedTouches[0].screenY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) changeSlide(dx < 0 ? 1 : -1);
+        }, { passive: true });
+    </script>
+</body>
+</html>
